@@ -12,7 +12,8 @@ pipeline{
     parameters {
         string(name: 'ansible_git_ref', defaultValue: 'master', description: '')
         string(name: 'application_env', defaultValue: 'qa', description: '')
-        string(name: 'application_git_ref', defaultValue: '', description: '')
+        string(name: 'TAG', defaultvalue:'', description: '')
+        string(name: 'application_git_ref', defaultValue: '$TAG', description: '')
         string(name: 'dependencies_git_ref', defaultValue: '$application_git_ref', description: '')
         string(name: 'dockerfile', defaultValue: 'Dockerfile', description: '')
         string(name: 'querulous_host', defaultValue: 'querulous-qa.iseatz.com', description: '')
@@ -21,6 +22,25 @@ pipeline{
         string(name: 'application', defaultValue: '', description: '')
         string(name: 'docker_identifier', defaultValue: '', description: '')
     }
-    stages {
 
-    }
+    stages{
+        stage('Prepare Application Stack to deploy'){
+            steps {
+                script {
+                    switch(application) {
+                        case "SENGINE":
+                            SENGINE.each {
+                                println "Item: $it" // `it` is an implicit parameter corresponding to the current element
+                            }                           
+                            break  
+
+                        case "BENGINE":
+                            BENGINE.each {
+                                println "Item: $it"
+                            }                            
+                            break
+                    }                   
+                }
+            }
+        }
+        
