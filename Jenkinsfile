@@ -29,17 +29,24 @@ pipeline{
                 script {
                     switch(application) {
                         case "SENGINE":
+                            def sengineStages = [:]
                             SENGINE.each {
-                                println "Item: $it" // `it` is an implicit parameter corresponding to the current element
+                                sengineStages["$it"] = {
+                                    node {
+                                        stage("Build sengine app ${it}") {
+                                            echo "Building app ${it}"
+                                        }
+                                    }
+                                }
                             }                           
-                            break  
+                            parallel sengineStages 
 
                         case "BENGINE":
                             BENGINE.each {
                                 println "Item: $it"
                             }                            
                             break
-                    }                   
+                    }
                 }
             }
         }
